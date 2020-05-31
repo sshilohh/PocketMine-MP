@@ -311,6 +311,18 @@ class RegionLoader{
 			}
 			$usedOffsets[$offset] = $i;
 		}
+		ksort($usedOffsets, SORT_NUMERIC);
+		$prevLocationIndex = null;
+		foreach($usedOffsets as $startOffset => $locationTableIndex){
+			if($prevLocationIndex !== null){
+				if($this->locationTable[$locationTableIndex]->overlaps($this->locationTable[$prevLocationIndex])){
+					self::getChunkCoords($locationTableIndex, $chunkXX, $chunkZZ);
+					self::getChunkCoords($prevLocationIndex, $prevChunkXX, $prevChunkZZ);
+					throw new CorruptedRegionException("Overlapping chunks detected in region header (chunk1: x=$chunkXX,z=$chunkZZ, chunk2: x=$prevChunkXX,z=$prevChunkZZ)");
+				}
+			}
+			$prevLocationIndex = $locationTableIndex;
+		}
 	}
 
 	private function writeLocationTable() : void{
