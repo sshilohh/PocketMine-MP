@@ -39,6 +39,7 @@ use function fseek;
 use function ftruncate;
 use function fwrite;
 use function is_resource;
+use function ksort;
 use function max;
 use function ord;
 use function pack;
